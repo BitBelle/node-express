@@ -1,0 +1,49 @@
+name: CI for Express.js Application
+
+on:
+  # Run pipeline for pull requests targeting the dev branch
+  pull_request:
+    branches:
+      - dev
+
+  # Run pipeline when code is pushed or merged to the main / dev branches
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18 # Replace with your Node.js version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run linting (optional)
+      - name: Run lint
+        run: npm run lint
+        continue-on-error: false # Set to true if linting is not a blocker
+
+      # Run unit tests
+      - name: Run unit tests
+        run: npm test
+
+      # Optional: Upload test results or logs for debugging
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-logs
+          path: logs/test.log # Replace with your actual log file path
