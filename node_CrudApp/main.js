@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 });
 
 //static files
-app.use(express.static("uploads"));
+app.use("/static", express.static("uploads"));
 
 
 //set the view engine to ejs
